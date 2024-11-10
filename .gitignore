@@ -42,3 +42,7 @@ nosetests.xml
 #PyPi
 setup.cfg
 .pypirc
+
+.DS_Store
+.idea
+.vscode/
