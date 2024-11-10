@@ -1,6 +1,8 @@
 from functools import partial
 from typing import Dict, List, Union, Optional, Any, Tuple
 from decimal import Decimal
+
+from mediawikiapi.geosearchresult import GeosearchResult
 from .exceptions import PageError, HTTPTimeoutError, MediaWikiAPIException
 from .config import Config
 from .util import memorized
@@ -112,6 +114,58 @@ class MediaWikiAPI(object):
             search_results = (d["title"] for d in raw_results["query"]["geosearch"])
 
         return list(search_results)
+    @memorized
+    def geosearch_pages(
+        self,
+        latitude: Decimal,
+        longitude: Decimal,
+        results: int = 10,
+        radius: int = 1000,
+    ) -> List[GeosearchResult]:
+        """
+        Do a wikipedia geo search for `latitude` and `longitude`
+        using HTTP API described in http://www.mediawiki.org/wiki/Extension:GeoData
+
+        Arguments:
+
+        * latitude (float or decimal.Decimal)
+        * longitude (float or decimal.Decimal)
+
+        Keyword arguments:
+
+        * results - the maximum number of results returned
+        * radius - Search radius in meters. The value must be between 10 and 10000
+        """
+        search_params = {
+        "action": "query",
+        "prop": "coordinates|pageimages|description|info|pageviews", # |categories
+        "inprop": "url",
+        "pithumbsize": 144,
+        "generator": "geosearch",
+        "ggsradius": min(int(radius) * 2, 10000),
+        "ggslimit": results,
+        "colimit": results,
+        "ggscoord": "{0}|{1}".format(latitude, longitude),
+        'cllimit': 200  
+        }
+
+        raw_results = self.session.request(search_params, self.config)
+
+        if "error" in raw_results:
+            if raw_results["error"]["info"] in (
+                "HTTP request timed out.",
+                "Pool queue is full",
+            ):
+                raise HTTPTimeoutError("{0}|{1}".format(latitude, longitude))
+            else:
+                raise MediaWikiAPIException(raw_results["error"]["info"])
+
+        search_pages = raw_results["query"].get("pages", None)
+        search_results = []
+        if search_pages:
+            search_results = [GeosearchResult(page) for page in search_pages.values()]
+            
+        return search_results
 
     @memorized
     def suggest(self, query: str) -> Any:
@@ -194,7 +248,7 @@ class MediaWikiAPI(object):
         self,
         title: Optional[str] = None,
         pageid: Optional[int] = None,
-        auto_suggest: bool = True,
+        auto_suggest: bool = False,
         redirect: bool = True,
         preload: bool = False,
     ) -> WikipediaPage:

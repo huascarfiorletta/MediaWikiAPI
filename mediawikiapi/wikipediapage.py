@@ -16,16 +16,16 @@ class WikipediaPage(object):
     """
 
     def __init__(
-        self,
-        request: Callable[
-            [Dict[str, Any]],
-            Dict[str, Any],
-        ],
-        title: Optional[str] = None,
-        pageid: Optional[int] = None,
-        redirect: bool = True,
-        preload: bool = False,
-        original_title: str = "",
+            self,
+            request: Callable[
+                [Dict[str, Any]],
+                Dict[str, Any],
+            ],
+            title: Optional[str] = None,
+            pageid: Optional[int] = None,
+            redirect: bool = True,
+            preload: bool = False,
+            original_title: str = "",
     ) -> None:
         if title is not None:
             self.title: str = title
@@ -39,13 +39,13 @@ class WikipediaPage(object):
         self.__load(redirect=redirect, preload=preload)
         if preload:
             for prop in (
-                "content",
-                "summary",
-                "images",
-                "references",
-                "links",
-                "sections",
-                "infobox",
+                    "content",
+                    "summary",
+                    "images",
+                    "references",
+                    "links",
+                    "sections",
+                    "infobox",
             ):
                 getattr(self, prop)
 
@@ -57,9 +57,9 @@ class WikipediaPage(object):
             return NotImplemented
         try:
             return (
-                self.pageid == other.pageid
-                and self.title == other.title
-                and self.url == other.url
+                    self.pageid == other.pageid
+                    and self.title == other.title
+                    and self.url == other.url
             )
         except Exception:
             return False
@@ -72,9 +72,10 @@ class WikipediaPage(object):
         Does not need to be called manually, should be called automatically during __init__.
         """
         query_params: Dict[str, str | int] = {
-            "prop": "info|pageprops",
-            "inprop": "url",
+            "prop": "info|pageprops|coordinates|pageimages|images|categories",
+            "inprop": "url",  # info full url
             "redirects": "",
+            'pithumbsize': 640,  # thumbnail size for prop pageimages
         }
         if not getattr(self, "pageid", None):
             query_params["titles"] = self.title
@@ -155,8 +156,12 @@ class WikipediaPage(object):
                 if items:
                     self.disambiguate_pages.append(items[0]["title"])
 
+        self.thumbnail = page['thumbnail']['source'] if "thumbnail" in page else ''
+        self.latitude = page['coordinates'][0]['lat'] if "coordinates" in page else None
+        self.longitude = page['coordinates'][0]['lon'] if "coordinates" in page else None
+
     def __continued_query(
-        self, query_params: Dict[str, Any]
+            self, query_params: Dict[str, Any]
     ) -> Generator[Any, None, None]:
         """
         Based on https://www.mediawiki.org/wiki/API:Query#Continuing_queries
@@ -174,9 +179,9 @@ class WikipediaPage(object):
                 break
 
             if (
-                "continue" in request
-                and last_continue == request["continue"]
-                and last_len_pages == len(request["query"]["pages"])
+                    "continue" in request
+                    and last_continue == request["continue"]
+                    and last_len_pages == len(request["query"]["pages"])
             ):
                 break
             pages = request["query"]["pages"]
@@ -377,7 +382,6 @@ class WikipediaPage(object):
         May include external links within page that aren't technically cited anywhere.
         """
         if not getattr(self, "_references", False):
-
             def add_protocol(url: str) -> str:
                 return url if url.startswith("http") else "http:" + url
 
