@@ -49,7 +49,7 @@ class Test(TestCase):
             assert len(pages) == number_of_results
             cnt_pages_without_pageviews = 0
             for current_page in pages:
-                if current_page.page_views is None:
+                if current_page.page_views < 0:
                     cnt_pages_without_pageviews += 1
                     pages_without_pageviews.append(current_page.title)
             try:
