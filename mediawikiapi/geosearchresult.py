@@ -18,8 +18,9 @@ class GeosearchResult(object):
         self.description = page_dict['description'] if "description" in page_dict else ''
         self.thumbnail = page_dict['thumbnail']['source'] if "thumbnail" in page_dict else ''
         self.article_url = "read_place/" + page_dict['fullurl'].split("/")[-1] if "fullurl" in page_dict else ''
-        self.page_views = 0
+        self.page_views = None
         if "pageviews" in page_dict:
+            self.page_views = 0
             for views_count in list(page_dict['pageviews'].values()):
                 if views_count is not None:
                     self.page_views = self.page_views + views_count
