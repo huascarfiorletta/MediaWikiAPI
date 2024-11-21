@@ -64,12 +64,59 @@ class RequestSession(object):
             time.sleep(int(wait_time.total_seconds()))
             self.__rate_limit_last_call = datetime.now()
 
-        r = self.session.get(
-            config.get_api_url(language),
-            params=params,
-            headers=headers,
-            timeout=config.timeout,
-        )
+        # r = self.session.get(
+        #     config.get_api_url(language),
+        #     params=params,
+        #     headers=headers,
+        #     timeout=config.timeout,
+        # )
+        #
+        # data: Dict[str, Any] = r.json()
+        # return data
 
-        data: Dict[str, Any] = r.json()
-        return data
+        last_continue = {}
+        all_results = {}
+
+        while True:
+            # Clone and update params with continue values from last iteration
+            current_params = params.copy()
+            current_params.update(last_continue)
+
+            r = self.session.get(
+                config.get_api_url(language),
+                params=current_params,
+                headers=headers,
+                timeout=config.timeout,
+            )
+
+            data: Dict[str, Any] = r.json()
+
+            # Check for errors
+            if 'error' in data:
+                raise Exception(data['error'])
+
+            # Merge results more carefully
+            for key, value in data.items():
+                if key == 'continue':
+                    continue
+
+                if key not in all_results:
+                    all_results[key] = value
+                elif isinstance(all_results[key], dict):
+                    # For dictionary results, update nested dictionaries
+                    all_results[key].update(value)
+                elif isinstance(all_results[key], list):
+                    # For list results, extend the list
+                    all_results[key].extend(value)
+                else:
+                    # For other types, replace the value
+                    all_results[key] = value
+
+            # Check if there are more results to fetch
+            if 'continue' not in data:
+                break
+
+            # Update continue parameters for next iteration
+            last_continue = data['continue']
+
+        return all_results

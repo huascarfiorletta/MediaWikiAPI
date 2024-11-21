@@ -19,7 +19,7 @@ class MediaWikiAPI(object):
 
     @memorized
     def search(
-        self, query: str, results: int = 10, suggestion: bool = False
+            self, query: str, results: int = 10, suggestion: bool = False
     ) -> Union[List[str], Tuple[List[Any], Optional[List[str]]]]:
         """
         Do a Wikipedia search for `query`.
@@ -43,8 +43,8 @@ class MediaWikiAPI(object):
 
         if "error" in raw_results:
             if raw_results["error"]["info"] in (
-                "HTTP request timed out.",
-                "Pool queue is full",
+                    "HTTP request timed out.",
+                    "Pool queue is full",
             ):
                 raise HTTPTimeoutError(query)
             else:
@@ -65,12 +65,12 @@ class MediaWikiAPI(object):
 
     @memorized
     def geosearch(
-        self,
-        latitude: Decimal,
-        longitude: Decimal,
-        title: Optional[str] = None,
-        results: int = 10,
-        radius: int = 1000,
+            self,
+            latitude: Decimal,
+            longitude: Decimal,
+            title: Optional[str] = None,
+            results: int = 10,
+            radius: int = 1000,
     ) -> List[str]:
         """
         Do a wikipedia geo search for `latitude` and `longitude`
@@ -100,8 +100,8 @@ class MediaWikiAPI(object):
 
         if "error" in raw_results:
             if raw_results["error"]["info"] in (
-                "HTTP request timed out.",
-                "Pool queue is full",
+                    "HTTP request timed out.",
+                    "Pool queue is full",
             ):
                 raise HTTPTimeoutError("{0}|{1}".format(latitude, longitude))
             else:
@@ -114,17 +114,19 @@ class MediaWikiAPI(object):
             search_results = (d["title"] for d in raw_results["query"]["geosearch"])
 
         return list(search_results)
+
     @memorized
     def geosearch_pages(
-        self,
-        latitude: Decimal,
-        longitude: Decimal,
-        results: int = 10,
-        radius: int = 1000,
+            self,
+            latitude: Decimal,
+            longitude: Decimal,
+            results: int = 10,
+            radius: int = 1000,
     ) -> List[GeosearchResult]:
         """
         Do a wikipedia geo search for `latitude` and `longitude`
         using HTTP API described in http://www.mediawiki.org/wiki/Extension:GeoData
+        docs https://en.wikipedia.org/w/api.php?action=help&modules=query
 
         Arguments:
 
@@ -137,24 +139,24 @@ class MediaWikiAPI(object):
         * radius - Search radius in meters. The value must be between 10 and 10000
         """
         search_params = {
-        "action": "query",
-        "prop": "coordinates|pageimages|description|info|pageviews", # |categories
-        "inprop": "url",
-        "pithumbsize": 144,
-        "generator": "geosearch",
-        "ggsradius": min(int(radius) * 2, 10000),
-        "ggslimit": results,
-        "colimit": results,
-        "ggscoord": "{0}|{1}".format(latitude, longitude),
-        'cllimit': 200  
+            "action": "query",
+            "prop": "coordinates|pageimages|description|info|pageviews",  # |categories
+            "inprop": "url",
+            "pithumbsize": 144,
+            "generator": "geosearch",
+            "ggsradius": min(int(radius) * 2, 10000),
+            "ggslimit": results,
+            "colimit": results,
+            "ggscoord": "{0}|{1}".format(latitude, longitude),
+            'cllimit': 200
         }
 
         raw_results = self.session.request(search_params, self.config)
 
         if "error" in raw_results:
             if raw_results["error"]["info"] in (
-                "HTTP request timed out.",
-                "Pool queue is full",
+                    "HTTP request timed out.",
+                    "Pool queue is full",
             ):
                 raise HTTPTimeoutError("{0}|{1}".format(latitude, longitude))
             else:
@@ -164,7 +166,7 @@ class MediaWikiAPI(object):
         search_results = []
         if search_pages:
             search_results = [GeosearchResult(page) for page in search_pages.values()]
-            
+
         return search_results
 
     @memorized
@@ -208,12 +210,12 @@ class MediaWikiAPI(object):
 
     @memorized
     def summary(
-        self,
-        title: str,
-        sentences: Optional[int] = 0,
-        chars: Optional[int] = 0,
-        auto_suggest: bool = True,
-        redirect: bool = True,
+            self,
+            title: str,
+            sentences: Optional[int] = 0,
+            chars: Optional[int] = 0,
+            auto_suggest: bool = True,
+            redirect: bool = True,
     ) -> Any:
         """
         Plain text summary of the page.
@@ -245,12 +247,12 @@ class MediaWikiAPI(object):
         return summary
 
     def page(
-        self,
-        title: Optional[str] = None,
-        pageid: Optional[int] = None,
-        auto_suggest: bool = False,
-        redirect: bool = True,
-        preload: bool = False,
+            self,
+            title: Optional[str] = None,
+            pageid: Optional[int] = None,
+            auto_suggest: bool = False,
+            redirect: bool = True,
+            preload: bool = False,
     ) -> WikipediaPage:
         """
         Get a WikipediaPage object for the page with title `title` or the pageid
@@ -316,11 +318,11 @@ class MediaWikiAPI(object):
         return {lang["code"]: lang["*"] for lang in languages}
 
     def category_members(
-        self,
-        title: Optional[str] = None,
-        pageid: Optional[int] = None,
-        cmlimit: int = 10,
-        cmtype: str = "page",
+            self,
+            title: Optional[str] = None,
+            pageid: Optional[int] = None,
+            cmlimit: int = 10,
+            cmtype: str = "page",
     ) -> List[str]:
         """
         Get list of page titles belonging to a category.
