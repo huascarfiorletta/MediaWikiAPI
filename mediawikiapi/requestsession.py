@@ -64,16 +64,6 @@ class RequestSession(object):
             time.sleep(int(wait_time.total_seconds()))
             self.__rate_limit_last_call = datetime.now()
 
-        # r = self.session.get(
-        #     config.get_api_url(language),
-        #     params=params,
-        #     headers=headers,
-        #     timeout=config.timeout,
-        # )
-        #
-        # data: Dict[str, Any] = r.json()
-        # return data
-
         last_continue = {}
         all_results = {}
 
