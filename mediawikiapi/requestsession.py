@@ -95,22 +95,11 @@ class RequestSession(object):
             if 'error' in data:
                 raise Exception(data['error'])
 
-            # Merge results more carefully
-            for key, value in data.items():
-                if key == 'continue':
-                    continue
+            # Remove 'continue' from data before updating
+            data_to_merge = {k: v for k, v in data.items() if k != 'continue'}
 
-                if key not in all_results:
-                    all_results[key] = value
-                elif isinstance(all_results[key], dict):
-                    # For dictionary results, update nested dictionaries
-                    all_results[key].update(value)
-                elif isinstance(all_results[key], list):
-                    # For list results, extend the list
-                    all_results[key].extend(value)
-                else:
-                    # For other types, replace the value
-                    all_results[key] = value
+            # Update all_results with only new keys
+            deep_update_unique(all_results, data_to_merge)
 
             # Check if there are more results to fetch
             if 'continue' not in data:
@@ -120,3 +109,28 @@ class RequestSession(object):
             last_continue = data['continue']
 
         return all_results
+
+
+def deep_update_unique(target: Dict[Any, Any], source: Dict[Any, Any]) -> Dict[Any, Any]:
+    """
+    Recursively updates target dictionary with source dictionary,
+    but only adds keys that don't already exist.
+
+    Args:
+        target: The dictionary to be updated
+        source: The dictionary to update from
+
+    Returns:
+        Updated target dictionary
+    """
+    for key, value in source.items():
+        if key not in target:
+            target[key] = value
+        elif isinstance(target[key], dict) and isinstance(value, dict):
+            # Recursively update nested dictionaries
+            deep_update_unique(target[key], value)
+        elif isinstance(target[key], list) and isinstance(value, list):
+            # Add only unique items to lists
+            target[key].extend([item for item in value if item not in target[key]])
+
+    return target
