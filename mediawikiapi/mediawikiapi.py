@@ -146,13 +146,12 @@ class MediaWikiAPI(object):
             "generator": "geosearch",
             "ggsradius": min(int(radius) * 2, 10000),
             "ggslimit": results,
-            "colimit": results,
+            "colimit": results,  # coordinates
             "ggscoord": "{0}|{1}".format(latitude, longitude),
-            "cllimit": 200,
             "explaintext": True,  # extracts https://www.mediawiki.org/w/api.php?action=help&modules=query%2Bextracts
             "exintro": True,  # extracts (greatly speeds up)
             "exchars": 1200,  # extracts
-
+            "ggssort": "relevance",
         }
 
         raw_results = self.session.request(search_params, self.config)

@@ -96,6 +96,21 @@ if __name__ == '__main__':
         "exchars": 1200,  # extracts
     }
 
+    search_params = {
+        "action": "query",
+        "prop": "coordinates|pageimages|description|info|pageviews|extracts",
+        "inprop": "url",
+        "pithumbsize": 144,
+        "generator": "geosearch",
+        "ggsradius": 10000,
+        "ggslimit": 200,
+        "colimit": 200,
+        "ggscoord": "{0}|{1}".format(NYC[0], NYC[1]),
+        "explaintext": True,  # extracts https://www.mediawiki.org/w/api.php?action=help&modules=query%2Bextracts
+        "exintro": True,  # extracts (greatly speeds up)
+        "exchars": 1200,  # extracts
+    }
+
     start_time = time.time()
     raw_results = mwa.session.request(search_params, mwa.config)
     print(json.dumps(raw_results, indent=4))

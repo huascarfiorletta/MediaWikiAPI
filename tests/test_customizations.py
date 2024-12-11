@@ -24,7 +24,13 @@ class Test(TestCase):
             assert place.latitude
             assert place.longitude
             assert place.extract
-
+        # at least one thumbnail
+        thumbnails = [place.thumbnail for place in places]
+        assert len(thumbnails) > 0
+        # at least one description
+        descriptions = [place.description for place in places]
+        assert len(descriptions) > 0
+    
     def test_wiki_page_from_title(self):
         titles = ["Little Rock", "Rome"]
         for title in titles:
