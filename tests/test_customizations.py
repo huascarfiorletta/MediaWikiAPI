@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from mediawikiapi import MediaWikiAPI, GeosearchResult
-
+from prototyping.location_coordinates import ROME, STOCKHOLM, NYC
 
 mediawikiapi = MediaWikiAPI()
 
