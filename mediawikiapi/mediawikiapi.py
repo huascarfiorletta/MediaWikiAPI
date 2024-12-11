@@ -140,7 +140,7 @@ class MediaWikiAPI(object):
         """
         search_params = {
             "action": "query",
-            "prop": "coordinates|pageimages|description|info|pageviews",  # |categories
+            "prop": "coordinates|pageimages|description|info|pageviews|extracts",
             "inprop": "url",
             "pithumbsize": 144,
             "generator": "geosearch",
@@ -148,7 +148,11 @@ class MediaWikiAPI(object):
             "ggslimit": results,
             "colimit": results,
             "ggscoord": "{0}|{1}".format(latitude, longitude),
-            'cllimit': 200
+            "cllimit": 200,
+            "explaintext": True,  # extracts https://www.mediawiki.org/w/api.php?action=help&modules=query%2Bextracts
+            "exintro": True,  # extracts (greatly speeds up)
+            "exchars": 1200,  # extracts
+
         }
 
         raw_results = self.session.request(search_params, self.config)

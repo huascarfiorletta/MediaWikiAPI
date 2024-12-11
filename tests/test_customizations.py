@@ -18,9 +18,12 @@ class Test(TestCase):
         assert len(places) == number_of_results
         # ensure all places have coordinates
         for place in places:
+            assert place.title
+            assert place.article_url
+            assert place.page_views
             assert place.latitude
             assert place.longitude
-            assert place.page_views
+            assert place.extract
 
     def test_wiki_page_from_title(self):
         titles = ["Little Rock", "Rome"]
