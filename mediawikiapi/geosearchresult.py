@@ -10,6 +10,7 @@ class GeosearchResult(object):
     latitude: float
     longitude: float
     extract: str
+    index: int
 
     def __init__(self, page_dict: dict[str, any]):
         self.title = page_dict['title']
@@ -25,6 +26,7 @@ class GeosearchResult(object):
         self.latitude = page_dict['coordinates'][0]['lat'] if "coordinates" in page_dict else None
         self.longitude = page_dict['coordinates'][0]['lon'] if "coordinates" in page_dict else None
         self.extract = page_dict['extract'] if "extract" in page_dict else None
+        self.index = page_dict['index'] if "index" in page_dict else None
 
 
     def __str__(self):

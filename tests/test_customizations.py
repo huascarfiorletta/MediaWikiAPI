@@ -2,9 +2,6 @@ from unittest import TestCase
 
 from mediawikiapi import MediaWikiAPI, GeosearchResult
 
-STOCKHOLM = (59.32558360695936, 18.070745550255786)
-ROME = (41.902011993223006, 12.493929510107037)
-NYC = (40.80773442954472, -73.96254051668487)
 
 mediawikiapi = MediaWikiAPI()
 

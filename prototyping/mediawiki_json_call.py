@@ -1,8 +1,9 @@
 import json
+import random
 import time
 
 from mediawikiapi import MediaWikiAPI
-from tests.test_customizations import ROME, STOCKHOLM, NYC
+from prototyping.location_coordinates import NYC, ROME
 
 """
 Run experimental calls to mediawiki API so as to inspect the contents returned and the latency of the call
@@ -13,6 +14,10 @@ https://en.wikipedia.org/w/api.php?action=query&list=geosearch&gsradius=10000&gs
 
 if __name__ == '__main__':
     mwa = MediaWikiAPI()
+    radius = 10000
+    results = 50
+    latitude, longitude = (NYC[0]+(random.random()-.5),
+                           NYC[1]+(random.random()-.5))
 
     # https://www.mediawiki.org/wiki/Extension:GeoData
     # returns a list and cannot be expanded with prop
@@ -102,13 +107,15 @@ if __name__ == '__main__':
         "inprop": "url",
         "pithumbsize": 144,
         "generator": "geosearch",
-        "ggsradius": 10000,
-        "ggslimit": 200,
-        "colimit": 200,
-        "ggscoord": "{0}|{1}".format(NYC[0], NYC[1]),
+        "ggsradius": min(int(radius) * 2, 10000),
+        "ggslimit": results,
+        "colimit": results,  # coordinates
+        "ggscoord": "{0}|{1}".format(latitude, longitude),
         "explaintext": True,  # extracts https://www.mediawiki.org/w/api.php?action=help&modules=query%2Bextracts
         "exintro": True,  # extracts (greatly speeds up)
         "exchars": 1200,  # extracts
+        "pvipdays": 7,  # pageviews https://www.mediawiki.org/w/api.php?action=help&modules=query%2Bpageviews
+        "ggssort": "relevance",
     }
 
     start_time = time.time()

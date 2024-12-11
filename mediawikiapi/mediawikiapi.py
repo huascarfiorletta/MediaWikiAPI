@@ -69,7 +69,7 @@ class MediaWikiAPI(object):
             latitude: Decimal,
             longitude: Decimal,
             title: Optional[str] = None,
-            results: int = 10,
+            results: int = 50,
             radius: int = 1000,
     ) -> List[str]:
         """
@@ -120,8 +120,8 @@ class MediaWikiAPI(object):
             self,
             latitude: Decimal,
             longitude: Decimal,
-            results: int = 10,
-            radius: int = 1000,
+            results: int = 50,
+            radius: int = 10000,
     ) -> List[GeosearchResult]:
         """
         Do a wikipedia geo search for `latitude` and `longitude`
@@ -151,6 +151,7 @@ class MediaWikiAPI(object):
             "explaintext": True,  # extracts https://www.mediawiki.org/w/api.php?action=help&modules=query%2Bextracts
             "exintro": True,  # extracts (greatly speeds up)
             "exchars": 1200,  # extracts
+            "pvipdays": 7,  # pageviews https://www.mediawiki.org/w/api.php?action=help&modules=query%2Bpageviews
             "ggssort": "relevance",
         }
 
@@ -164,8 +165,10 @@ class MediaWikiAPI(object):
                 raise HTTPTimeoutError("{0}|{1}".format(latitude, longitude))
             else:
                 raise MediaWikiAPIException(raw_results["error"]["info"])
-
-        search_pages = raw_results["query"].get("pages", None)
+        try:
+            search_pages = raw_results["query"].get("pages", None)
+        except:
+            raise(ValueError(raw_results))
         search_results = []
         if search_pages:
             search_results = [GeosearchResult(page) for page in search_pages.values()]
