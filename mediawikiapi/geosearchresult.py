@@ -1,3 +1,8 @@
+import datetime
+
+import dateutil
+
+
 class GeosearchResult(object):
     """
     Contains data from a Geosearch query page.
@@ -11,6 +16,8 @@ class GeosearchResult(object):
     longitude: float
     extract: str
     index: int
+    length: int
+    touched: datetime
 
     def __init__(self, page_dict: dict[str, any]):
         self.title = page_dict['title']
@@ -27,6 +34,8 @@ class GeosearchResult(object):
         self.longitude = page_dict['coordinates'][0]['lon'] if "coordinates" in page_dict else None
         self.extract = page_dict['extract'] if "extract" in page_dict else None
         self.index = page_dict['index'] if "index" in page_dict else None
+        self.length = page_dict['length'] if "length" in page_dict else None
+        self.touched = dateutil.parser.isoparse(page_dict['touched']) if "touched" in page_dict else None
 
 
     def __str__(self):
