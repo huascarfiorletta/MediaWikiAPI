@@ -122,6 +122,7 @@ class MediaWikiAPI(object):
             longitude: Decimal,
             results: int = 50,
             radius: int = 10000,
+            page_views_days: int = 0,
     ) -> List[GeosearchResult]:
         """
         Do a wikipedia geo search for `latitude` and `longitude`
@@ -140,7 +141,7 @@ class MediaWikiAPI(object):
         """
         search_params = {
             "action": "query",
-            "prop": "coordinates|pageimages|description|info|pageviews|extracts",
+            "prop": "coordinates|pageimages|description|info|extracts" + "|pageviews" if page_views_days > 0 else "",
             "inprop": "url",
             "pithumbsize": 144,
             "generator": "geosearch",
@@ -151,9 +152,10 @@ class MediaWikiAPI(object):
             "explaintext": True,  # extracts https://www.mediawiki.org/w/api.php?action=help&modules=query%2Bextracts
             "exintro": True,  # extracts (greatly speeds up)
             "exchars": 1200,  # extracts
-            "pvipdays": 7,  # pageviews https://www.mediawiki.org/w/api.php?action=help&modules=query%2Bpageviews
             "ggssort": "relevance",
         }
+        if page_views_days > 0:
+            search_params["pvipdays"] = page_views_days
 
         raw_results = self.session.request(search_params, self.config)
 

@@ -11,7 +11,7 @@ class GeosearchResult(object):
     description: str
     thumbnail: str
     article_url: str
-    page_views: int
+    avg_page_views: float
     latitude: float
     longitude: float
     extract: str
@@ -24,12 +24,14 @@ class GeosearchResult(object):
         self.description = page_dict['description'] if "description" in page_dict else ''
         self.thumbnail = page_dict['thumbnail']['source'] if "thumbnail" in page_dict else ''
         self.article_url = "read_place/" + page_dict['fullurl'].split("/")[-1] if "fullurl" in page_dict else ''
-        self.page_views = -1
+        self.avg_page_views = -1
         if "pageviews" in page_dict:
-            self.page_views = 0
-            for views_count in list(page_dict['pageviews'].values()):
+            self.avg_page_views = 0
+            pageviews_counts = list(page_dict['pageviews'].values())
+            for views_count in pageviews_counts:
                 if views_count is not None:
-                    self.page_views = self.page_views + views_count
+                    self.avg_page_views = self.avg_page_views + views_count
+            self.avg_page_views = self.avg_page_views / len(pageviews_counts)
         self.latitude = page_dict['coordinates'][0]['lat'] if "coordinates" in page_dict else None
         self.longitude = page_dict['coordinates'][0]['lon'] if "coordinates" in page_dict else None
         self.extract = page_dict['extract'] if "extract" in page_dict else None

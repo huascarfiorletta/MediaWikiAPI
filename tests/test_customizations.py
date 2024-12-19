@@ -17,7 +17,7 @@ class Test(TestCase):
         for place in places:
             assert place.title
             assert place.article_url
-            assert place.page_views
+            assert place.avg_page_views
             assert place.latitude
             assert place.longitude
             assert place.extract
@@ -51,11 +51,11 @@ class Test(TestCase):
         for city in [ROME, STOCKHOLM, NYC]:
             pages: list[GeosearchResult] = mediawikiapi.geosearch_pages(city[0],
                                                                         city[1], radius=10000,
-                                                                        results=number_of_results)
+                                                                        results=number_of_results, page_views_days=7)
             assert len(pages) == number_of_results
             cnt_pages_without_pageviews = 0
             for current_page in pages:
-                if current_page.page_views < 0:
+                if current_page.avg_page_views < 0:
                     cnt_pages_without_pageviews += 1
                     pages_without_pageviews.append(current_page.title)
             try:
