@@ -118,7 +118,24 @@ if __name__ == '__main__':
         "ggssort": "relevance",
     }
 
+    search_params = {
+        "action": "query",
+        "prop": "coordinates|pageimages|description|info|extracts" ,
+        "inprop": "url",
+        "pithumbsize": 144,
+        "generator": "geosearch",
+        "ggsradius": min(int(radius) * 2, 10000),
+        "ggslimit": 5,
+        "colimit": 5,  # coordinates
+        "ggscoord": "{0}|{1}".format(latitude, longitude),
+        "explaintext": True,  # extracts https://www.mediawiki.org/w/api.php?action=help&modules=query%2Bextracts
+        "exintro": True,  # extracts (greatly speeds up)
+        "exchars": 1200,  # extracts
+        "ggssort": "relevance",
+    }
+
     start_time = time.time()
     raw_results = mwa.session.request(search_params, mwa.config)
-    print(json.dumps(raw_results, indent=4))
+    json.dumps(raw_results) # , indent=4
+    json.loads(json.dumps(raw_results))
     print(f"Elapsed time: {time.time() - start_time} seconds")

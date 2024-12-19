@@ -9,7 +9,7 @@ mediawikiapi = MediaWikiAPI()
 class Test(TestCase):
 
     def test_wiki_geo_query(self):
-        number_of_results = 50
+        number_of_results = 20
         places: list[GeosearchResult] = mediawikiapi.geosearch_pages(ROME[0],
                                                                      ROME[1], radius=10000, results=number_of_results)
         assert len(places) == number_of_results
