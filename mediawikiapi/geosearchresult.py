@@ -1,5 +1,4 @@
 import datetime
-
 import dateutil
 
 
@@ -20,7 +19,7 @@ class GeosearchResult(object):
     touched: datetime
 
     def __init__(self, page_dict: dict[str, any]):
-        self.title = page_dict['title']
+        self.title = page_dict['title'] if "title" in page_dict else ''
         self.description = page_dict['description'] if "description" in page_dict else ''
         self.thumbnail = page_dict['thumbnail']['source'] if "thumbnail" in page_dict else ''
         self.article_url = "read_place/" + page_dict['fullurl'].split("/")[-1] if "fullurl" in page_dict else ''
