@@ -72,7 +72,7 @@ class TestPageSetUp(unittest.TestCase):
 
     def test_disambiguate(self) -> None:
         """Test that page raises an error when a disambiguation page is reached."""
-        page = api.page("Template", auto_suggest=False, redirect=False)
+        page = api.page("Template", auto_suggest=True, redirect=False)
         disambiguation_list = [
             "Template (file format)",
             "Template (C++)",
@@ -90,7 +90,7 @@ class TestPageSetUp(unittest.TestCase):
     def test_auto_suggest(self) -> None:
         """Test that auto_suggest properly corrects a typo."""
         # yum, butter.
-        butterfly = api.page("butteryfly")
+        butterfly = api.page("butteryfly", auto_suggest=True)
 
         self.assertEqual(butterfly.title, "Butterfly")
         self.assertEqual(butterfly.url, "https://en.wikipedia.org/wiki/Butterfly")
