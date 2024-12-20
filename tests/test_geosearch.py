@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import json
-from unittest import mock
+import unittest
+from decimal import Decimal
 from unittest.mock import patch
 
 import pytest
-import unittest
-from decimal import Decimal
+
 from mediawikiapi import MediaWikiAPI, GeosearchResult
 from tests.request_mock_data import mock_data
 
