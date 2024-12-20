@@ -26,10 +26,11 @@ class RequestSession(object):
         self.__session = requests.Session()
 
     def request(
-        self,
-        params: Dict[str, Any],
-        config: Config,
-        language: Optional[Union[str, Language]] = None,
+            self,
+            params: Dict[str, Any],
+            config: Config,
+            language: Optional[Union[str, Language]] = None,
+            max_continue=50
     ) -> Dict[str, Any]:
         """
         Make a request to the Wikipedia API using the given search parameters,
@@ -52,21 +53,22 @@ class RequestSession(object):
         headers = {"User-Agent": config.user_agent}
 
         if (
-            self.__rate_limit_last_call
-            and config.rate_limit
-            and (self.__rate_limit_last_call + config.rate_limit) > datetime.now()
+                self.__rate_limit_last_call
+                and config.rate_limit
+                and (self.__rate_limit_last_call + config.rate_limit) > datetime.now()
         ):
             # it hasn't been long enough since the last API call
             # so wait until we're in the clear to make the request
             wait_time = (
-                self.__rate_limit_last_call + config.rate_limit
-            ) - datetime.now()
+                                self.__rate_limit_last_call + config.rate_limit
+                        ) - datetime.now()
             time.sleep(int(wait_time.total_seconds()))
             self.__rate_limit_last_call = datetime.now()
 
         last_continue = {}
         all_results = {}
 
+        continue_count = 0
         while True:
             # Clone and update params with continue values from last iteration
             current_params = params.copy()
@@ -92,9 +94,9 @@ class RequestSession(object):
             deep_update_unique(all_results, data_to_merge)
 
             # Check if there are more results to fetch
-            if 'continue' not in data:
+            if 'continue' not in data or continue_count >= max_continue:
                 break
-
+            continue_count += 1
             # Update continue parameters for next iteration
             last_continue = data['continue']
 

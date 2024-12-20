@@ -72,7 +72,7 @@ class TestPageSetUp(unittest.TestCase):
 
     def test_disambiguate(self) -> None:
         """Test that page raises an error when a disambiguation page is reached."""
-        page = api.page("Template", auto_suggest=True, redirect=False)
+        page = api.page("Template", auto_suggest=False, redirect=False)
         disambiguation_list = [
             "Template (file format)",
             "Template (C++)",
