@@ -153,7 +153,7 @@ class WikipediaPage(object):
             ]
             for lis_item in filtered_lis:
                 items = lis_item.find_all("a")
-                if items:
+                if items and "title" in items[0]:
                     self.disambiguate_pages.append(items[0]["title"])
 
         self.thumbnail = page['thumbnail']['source'] if "thumbnail" in page else ''
