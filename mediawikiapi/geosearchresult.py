@@ -22,7 +22,7 @@ class GeosearchResult(object):
         self.title = page_dict['title'] if "title" in page_dict else ''
         self.description = page_dict['description'] if "description" in page_dict else ''
         self.thumbnail = page_dict['thumbnail']['source'] if "thumbnail" in page_dict else ''
-        self.article_url = self.get_article_url(page_dict)
+        self.article_url = page_dict['fullurl'] if "fullurl" in page_dict else ''
         self.avg_page_views = -1
         if "pageviews" in page_dict:
             self.avg_page_views = 0
@@ -37,9 +37,6 @@ class GeosearchResult(object):
         self.index = page_dict['index'] if "index" in page_dict else None
         self.length = page_dict['length'] if "length" in page_dict else None
         self.touched = dateutil.parser.isoparse(page_dict['touched']) if "touched" in page_dict else None
-
-    def get_article_url(self, page_dict):
-        return "read_place/" + page_dict['fullurl'].split("/")[-1] if "fullurl" in page_dict else ''
 
     def __str__(self):
         return f"Title: {self.title} - Description: {self.description}"
