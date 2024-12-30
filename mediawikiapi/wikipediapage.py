@@ -66,7 +66,7 @@ class WikipediaPage(object):
         except Exception:
             return False
 
-    def __load(self, redirect: bool = True, preload: bool = False) -> None:
+    def __load(self, redirect: bool = True, preload: bool = False, thumbsize: int = 144) -> None:
         """
         Load basic information from Wikipedia.
         Confirm that page exists and is not a disambiguation/redirect.
@@ -77,7 +77,7 @@ class WikipediaPage(object):
             "prop": "info|pageprops|coordinates|pageimages|images|categories",
             "inprop": "url",  # info full url
             "redirects": "",
-            'pithumbsize': 640,  # thumbnail size for prop pageimages
+            'pithumbsize': thumbsize,  # thumbnail size for prop pageimages
         }
         if not getattr(self, "pageid", None):
             query_params["titles"] = self.title

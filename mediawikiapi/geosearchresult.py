@@ -51,7 +51,7 @@ class GeosearchResult(object):
         result.description = page_dict['pageprops']['wikibase-shortdesc'] if (
                     "pageprops" in page_dict and 'wikibase-shortdesc' in page_dict['pageprops']) else ''
         result.thumbnail = page_dict['thumbnail'] if "thumbnail" in page_dict else ''
-        result.article_url = GeosearchResult.get_article_url(page_dict['url']) if "url" in page_dict else '',
+        result.article_url = GeosearchResult.get_article_url(page_dict['url']) if "url" in page_dict else ''
         result.latitude = page_dict['latitude'] if "latitude" in page_dict else None
         result.longitude = page_dict['longitude'] if "longitude" in page_dict else None
         result.extract = ''
