@@ -1,9 +1,11 @@
 from __future__ import annotations
+
 import re
-from typing import Dict, List, Any, Tuple, Optional, Generator, Callable, Union
 from decimal import Decimal
+from typing import Dict, List, Any, Tuple, Optional, Generator, Callable
+
 from bs4 import BeautifulSoup
-from .config import Config
+
 from .exceptions import PageError, RedirectError, ODD_ERROR_MESSAGE
 from .language import Language
 from .util import clean_infobox
