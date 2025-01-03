@@ -6,7 +6,7 @@ setup(
     description='A Python wrapper for the MediaWiki API',
     author='Huascar Fiorletta',
     url='https://github.com/huascarfiorletta/MediaWikiAPI',
-    packages=find_packages(),
+    packages=find_packages(include=['mediawikiapi', 'mediawikiapi.*']),
     install_requires=[
         'requests',  # Add any other dependencies your package needs
     ],
@@ -17,3 +17,4 @@ setup(
     ],
     python_requires='>=3.6',
 )
+
