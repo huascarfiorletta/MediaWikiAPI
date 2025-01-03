@@ -38,6 +38,12 @@ class GeosearchResult(object):
         self.length = page_dict['length'] if "length" in page_dict else None
         self.touched = dateutil.parser.isoparse(page_dict['touched']) if "touched" in page_dict else None
 
+    def to_dict(self):
+        return self.__dict__
+
+    def __str__(self):
+        return f"Title: {self.title} - Description: {self.description}"
+
     @staticmethod
     def get_article_url(full_url: str):
         if not full_url:
@@ -59,9 +65,3 @@ class GeosearchResult(object):
         result.length = -1
         result.touched = None
         return result
-
-    def to_dict(self):
-        return self.__dict__
-
-    def __str__(self):
-        return f"Title: {self.title} - Description: {self.description}"
