@@ -136,6 +136,6 @@ if __name__ == '__main__':
 
     start_time = time.time()
     raw_results = mwa.session.request(search_params, mwa.config)
-    json.dumps(raw_results) # , indent=4
+    print(json.dumps(raw_results)) # , indent=4
     json.loads(json.dumps(raw_results))
     print(f"Elapsed time: {time.time() - start_time} seconds")
