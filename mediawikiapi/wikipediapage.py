@@ -28,6 +28,7 @@ class WikipediaPage(object):
             redirect: bool = True,
             preload: bool = False,
             original_title: str = "",
+            thumbsize=640
     ) -> None:
         if title is not None:
             self.title: str = title
@@ -38,7 +39,7 @@ class WikipediaPage(object):
             raise ValueError("Either a title or a pageid must be specified")
 
         self.request = request
-        self.__load(redirect=redirect, preload=preload)
+        self.__load(redirect=redirect, preload=preload, thumbsize=thumbsize)
         if preload:
             for prop in (
                     "content",
@@ -66,7 +67,7 @@ class WikipediaPage(object):
         except Exception:
             return False
 
-    def __load(self, redirect: bool = True, preload: bool = False, thumbsize: int = 144) -> None:
+    def __load(self, redirect: bool = True, preload: bool = False, thumbsize: int = 640) -> None:
         """
         Load basic information from Wikipedia.
         Confirm that page exists and is not a disambiguation/redirect.

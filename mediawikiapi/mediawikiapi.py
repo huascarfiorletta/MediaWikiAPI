@@ -142,7 +142,7 @@ class MediaWikiAPI(object):
             "action": "query",
             "prop": "coordinates|pageimages|description|info|extracts",
             "inprop": "url",
-            "pithumbsize": 144,
+            "pithumbsize": 640,
             "generator": "geosearch",
             "ggsradius": min(int(radius) * 2, 10000),
             "ggslimit": results,
@@ -258,6 +258,7 @@ class MediaWikiAPI(object):
             auto_suggest: bool = False,
             redirect: bool = True,
             preload: bool = False,
+            thumbsize=640,
     ) -> WikipediaPage:
         """
         Get a WikipediaPage object for the page with title `title` or the pageid
@@ -299,7 +300,7 @@ class MediaWikiAPI(object):
                     # if there are no suggestion or search results, the page doesn't exist
                     raise PageError(title=title)
             return WikipediaPage(
-                request=request_f, title=title, redirect=redirect, preload=preload
+                request=request_f, title=title, redirect=redirect, preload=preload, thumbsize=thumbsize
             )
         elif pageid is not None:
             return WikipediaPage(request=request_f, pageid=pageid, preload=preload)
