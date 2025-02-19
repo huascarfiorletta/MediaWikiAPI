@@ -488,7 +488,7 @@ class WikipediaPage(object):
 
         return self._sections
 
-    def section(self, section_title: str) -> Optional[str]:
+    def section(self, section_title: str, with_subsections: bool = False) -> Optional[str]:
         """
         Get the plain text content of a section from `self.sections`.
         Returns None if `section_title` isn't found, otherwise returns a whitespace stripped string.
@@ -507,7 +507,17 @@ class WikipediaPage(object):
             return None
 
         try:
-            next_index = self.content.index("==", index)
+            if with_subsections:
+                # extracts a section including subsections
+                content_after_title = self.content[index:]
+                group = re.search(r"\s== ", content_after_title)
+                if not group:
+                    next_index = len(self.content)
+                else:
+                    next_index = self.content.index(group.group(), index)
+            else:
+                # extracts a section excluding subsections
+                next_index = self.content.index("==", index)
         except ValueError:
             next_index = len(self.content)
 
