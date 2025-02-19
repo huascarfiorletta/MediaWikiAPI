@@ -17,7 +17,7 @@ def test_get_wiki_page_saint_nicolas_church():
     assert wiki_page.title
 
 
-def test_get_wiki_page_saint_nicolas_church():
+def test_section_with_subsection():
     mediawikiapi = MediaWikiAPI()
     wiki_page = mediawikiapi.page('Kyoto')
     mock_content = """As the capital of Japan from 794 to 1868, Kyoto is sometimes called the thousand-year capital (
